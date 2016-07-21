@@ -1,8 +1,8 @@
 app.service('SunBurstService', function ($window) {
     this.show = function (csv) {
         // Dimensions of sunburst.
-        var width = window.innerWidth - window.innerWidth/10;
-        var height = window.innerHeight - window.innerHeight/8;
+        var width = window.innerWidth - window.innerWidth / 10;
+        var height = window.innerHeight - window.innerHeight / 8;
         var radius = Math.min(width, height) / 2;
 
         // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -13,16 +13,8 @@ app.service('SunBurstService', function ($window) {
             t: 10
         };
 
-        // Mapping of step names to colors.
+        // Mapping of step names to colors is set in build Hierarchy
         var colors = new Array();
-        /*var colors = {
-            "home": "#5687d1",
-            "product": "#7b615c",
-            "search": "#de783b",
-            "account": "#6ab975",
-            "other": "#a173d1",
-            "end": "#bbbbbb"
-        }; */
 
         // Total size of all segments; we set this later, after loading the data.
         var totalSize = 0;
@@ -119,8 +111,8 @@ app.service('SunBurstService', function ($window) {
                 .text(percentageString);
 
             d3.select("#explanation")
-                .style("left", (width / 2).toString()+"px")
-                .style("top", (70 + height / 2.5).toString()+"px")
+                .style("left", (width / 2).toString() + "px")
+                .style("top", (70 + height / 2.5).toString() + "px")
                 .style("visibility", "");
 
             var sequenceArray = getAncestors(d);
@@ -315,7 +307,7 @@ app.service('SunBurstService', function ($window) {
                 for (var j = 0; j < parts.length; j++) {
                     var children = currentNode["children"];
                     var nodeName = parts[j];
-                    colors[nodeName] = getRandomColor(i, j);
+                    colors[nodeName] = getColor(i, j);
                     var childNode;
                     if (j + 1 < parts.length) {
                         // Not yet at the end of the sequence; move down the tree.
@@ -340,20 +332,18 @@ app.service('SunBurstService', function ($window) {
                     }
                 }
             }
-            console.log(colors);
             return root;
         };
 
-        function getRandomColor(c, g) {
+        function getColor(i, j) {
             var letters = '0123456789ABCDEF'.split('');
             var color = '#';
-
-            var add = 0.0001; //TO BE IMPROVED
-            for (var i = 0; i < 6; i++ ) {
-
-                color += letters[Math.floor(Math.random() * 16)];
-                add += 0.1;
-
+            i %= 16;
+            j %= 16;
+            var sum = ((i + 1) * (j + 1)) % 16;
+            for (var i = 0; i < 6; i++) {
+                color += letters[sum];
+                sum = (sum + i + j) % 16;
             }
             return color;
         }
