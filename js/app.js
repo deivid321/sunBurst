@@ -45,14 +45,14 @@ app.factory("DataFactory", function($http) {
 });
 */
 
-/*//SHOULD BE WORKING BUT NOT
+//SHOULD BE WORKING BUT NOT
 app.service('DataService', function($http) {
 
     var DataService = {
         asyncc: function() {
                 var promise = $http({
                     method: "GET",
-                    url: "../MemoryJson.json"
+                    url: "MemoryJson.json"
                 }).then(function(response) {
                         var myWelcome = response.statusText;
                         var entriesObj = response.data.histograms[0].total;
@@ -90,7 +90,7 @@ app.service('DataService', function($http) {
     };
     return DataService;
 });
-*/
+
 /*//SHOULD BE ALSO FINE
 app.factory('dataService', function($http) {
 

@@ -1,8 +1,8 @@
-app.service('SunBurstService', function () {
+app.service('SunBurstService', function ($window) {
     this.show = function (csv) {
         // Dimensions of sunburst.
-        var width = screen.width;
-        var height = screen.width / 2;
+        var width = window.innerWidth - window.innerWidth/10;
+        var height = window.innerHeight - window.innerHeight/8;
         var radius = Math.min(width, height) / 2;
 
         // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -14,24 +14,26 @@ app.service('SunBurstService', function () {
         };
 
         // Mapping of step names to colors.
-        var colors = {
+        var colors = new Array();
+        /*var colors = {
             "home": "#5687d1",
             "product": "#7b615c",
             "search": "#de783b",
             "account": "#6ab975",
             "other": "#a173d1",
             "end": "#bbbbbb"
-        };
+        }; */
 
         // Total size of all segments; we set this later, after loading the data.
         var totalSize = 0;
 
         var vis = d3.select("#chart").append("svg:svg")
             .attr("width", width)
+            .attr("x", 0)
             .attr("height", height)
             .append("svg:g")
             .attr("id", "container")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+            .attr("transform", "translate(" + window.innerWidth / 2 + "," + window.innerHeight / 2.5 + ")");
 
         var partition = d3.layout.partition()
             .size([2 * Math.PI, radius * radius])
@@ -57,8 +59,8 @@ app.service('SunBurstService', function () {
         // row, and can receive the csv as an array of arrays.
         //d3.text("labas.csv", function(text) {
         //var csv = d3.csv.parseRows($scope.data);
+
         //Takes list of 2 columns array
-        console.log(csv);
         var json = buildHierarchy(csv);
         createVisualization(json);
         // });
@@ -117,6 +119,8 @@ app.service('SunBurstService', function () {
                 .text(percentageString);
 
             d3.select("#explanation")
+                .style("left", (width / 2).toString()+"px")
+                .style("top", (70 + height / 2.5).toString()+"px")
                 .style("visibility", "");
 
             var sequenceArray = getAncestors(d);
@@ -311,6 +315,7 @@ app.service('SunBurstService', function () {
                 for (var j = 0; j < parts.length; j++) {
                     var children = currentNode["children"];
                     var nodeName = parts[j];
+                    colors[nodeName] = getRandomColor(i, j);
                     var childNode;
                     if (j + 1 < parts.length) {
                         // Not yet at the end of the sequence; move down the tree.
@@ -335,8 +340,23 @@ app.service('SunBurstService', function () {
                     }
                 }
             }
+            console.log(colors);
             return root;
         };
+
+        function getRandomColor(c, g) {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+
+            var add = 0.0001; //TO BE IMPROVED
+            for (var i = 0; i < 6; i++ ) {
+
+                color += letters[Math.floor(Math.random() * 16)];
+                add += 0.1;
+
+            }
+            return color;
+        }
     }
 
 });

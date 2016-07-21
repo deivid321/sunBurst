@@ -1,4 +1,4 @@
-app.controller('DataController', function($scope, $http, SunBurstService) {
+app.controller('DataController', function ($scope, $http, DataService, SunBurstService) {
     $http({
         method: "GET",
         url: "MemoryJson.json"
@@ -8,21 +8,25 @@ app.controller('DataController', function($scope, $http, SunBurstService) {
         $scope.totals = angular.fromJson(response.data.histograms[0].total);
         $scope.csv = [];
         var i = 0;
-        angular.forEach($scope.paths, function(item) {
+        angular.forEach($scope.paths, function (item) {
             var arr = [item.replace(/\//g, '-') + ", ", $scope.totals[i]];
             $scope.csv.push(arr);
             i++;
         });
-        SunBurstService.show($scope.csv);
+
         /*
-        DataService.asyncc().then(function(d) {
-            $scope.data = angular.copy(d);
-        });
-        var arr = $scope.data;
-        console.log(arr);
-        */
+         DataService.asyncc().then(function(d) {
+         $scope.data = angular.copy(d);
+         console.log(d);
+         });
+         var arr = $scope.data;
+         console.log(arr);
+         */
+
+        SunBurstService.show($scope.csv);
 
     }, function myError(response) {
-        $scope.myWelcome = response.statusText;
+        $scope.status = response.statusText;
     });
+
 });
