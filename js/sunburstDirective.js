@@ -16,7 +16,7 @@ function showSunburst($http) {
             $scope.totals = angular.fromJson(response.data.histograms[0].total);
             $scope.csv = [];
             angular.forEach($scope.paths, function (item, i) {
-                var arr = [item.replace(/\//g, '-') + ", ", $scope.totals[i]];
+                var arr = [item.replace(/\//g, ':') + ", ", $scope.totals[i]];
                 $scope.csv.push(arr);
                 i++;
             });
@@ -340,7 +340,7 @@ function showSunburst($http) {
                 if (isNaN(size)) { // e.g. if this is a header row
                     continue;
                 }
-                var parts = sequence.split("-");
+                var parts = sequence.split(":");
                 var currentNode = root;
                 for (var j = 0; j < parts.length; j++) {
                     var children = currentNode["children"];
@@ -376,7 +376,7 @@ function showSunburst($http) {
         function getColor(i, j) {
             var letters = '0123456789ABCDEF'.split('');
             var color = '#';
-            i %= 16;
+            i = i*2 % 16;
             j %= 16;
             var sum = ((i + 1) * (j + 1)) % 16;
             for (var i = 0; i < 6; i++) {
