@@ -1,5 +1,5 @@
-app.controller('DataController', function ($scope, $http, DataService, SunBurstService) {
-    $http({
+app.controller('DataController', function ($scope, $http) {
+   /* $http({
         method: "GET",
         url: "MemoryJson.json"
     }).then(function mySucces(response) {
@@ -14,19 +14,19 @@ app.controller('DataController', function ($scope, $http, DataService, SunBurstS
             i++;
         });
 
-        /*
+        /!*
          DataService.asyncc().then(function(d) {
          $scope.data = angular.copy(d);
          console.log(d);
          });
          var arr = $scope.data;
          console.log(arr);
-         */
+         *!/
 
         SunBurstService.show($scope.csv);
 
     }, function myError(response) {
         $scope.status = response.statusText;
     });
-
+*/
 });

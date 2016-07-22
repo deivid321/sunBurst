@@ -44,7 +44,7 @@ app.factory("DataFactory", function($http) {
     }
 });
 */
-
+/*
 //SHOULD BE WORKING BUT NOT
 app.service('DataService', function($http) {
 
@@ -90,6 +90,7 @@ app.service('DataService', function($http) {
     };
     return DataService;
 });
+*/
 
 /*//SHOULD BE ALSO FINE
 app.factory('dataService', function($http) {

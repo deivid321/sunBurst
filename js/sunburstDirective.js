@@ -1,6 +1,12 @@
-app.directive('SunBurstDirective', ['$scope', '$http', function ($scope, $http) {
+app.directive('sunburstDirective', showSunburst);
 
-    function link(scope) {
+function showSunburst($http) {
+    return {
+        templateUrl: 'js/chart.html',
+        link: link
+    };
+
+    function link($scope, element, attrs) {
         $http({
             method: "GET",
             url: "MemoryJson.json"
@@ -9,14 +15,13 @@ app.directive('SunBurstDirective', ['$scope', '$http', function ($scope, $http) 
             $scope.paths = angular.fromJson(response.data.histograms[0].path);
             $scope.totals = angular.fromJson(response.data.histograms[0].total);
             $scope.csv = [];
-            var i = 0;
-            angular.forEach($scope.paths, function (item) {
+            angular.forEach($scope.paths, function (item, i) {
                 var arr = [item.replace(/\//g, '-') + ", ", $scope.totals[i]];
                 $scope.csv.push(arr);
                 i++;
             });
 
-            /*
+            /* Move http to separate function (service)
              DataService.asyncc().then(function(d) {
              $scope.data = angular.copy(d);
              console.log(d);
@@ -25,10 +30,14 @@ app.directive('SunBurstDirective', ['$scope', '$http', function ($scope, $http) 
              console.log(arr);
              */
 
+            showSunburst($scope.csv);
+
         }, function myError(response) {
             $scope.status = response.statusText;
         });
+    }
 
+    function showSunburst(csv) {
         // Dimensions of sunburst.
         var width = window.innerWidth - window.innerWidth / 10;
         var height = window.innerHeight - window.innerHeight / 8;
@@ -376,10 +385,6 @@ app.directive('SunBurstDirective', ['$scope', '$http', function ($scope, $http) 
             }
             return color;
         };
+    }
 
-        return {
-            link: link
-        };
-    };
-}
-]);
+};
