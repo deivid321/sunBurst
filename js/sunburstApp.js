@@ -1,4 +1,6 @@
-app.directive('sunburstDirective', showSunburst);
+angular
+    .module('sunburstApp', [])
+    .directive('sunburstDirective', showSunburst);
 
 function showSunburst($http) {
     return {
@@ -38,10 +40,6 @@ function showSunburst($http) {
     }
 
     function showSunburst(csv) {
-        // Dimensions of sunburst.
-        var width = window.innerWidth - 220;
-        var height = window.innerHeight;
-        var radius = Math.min(width, height) / 2;
 
         // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
         var b = {
@@ -51,8 +49,21 @@ function showSunburst($http) {
             t: 10
         };
 
+        // Dimensions of legend item: width, height, spacing, radius of rounded rect.
+        var li = {
+            w: 180,
+            h: 30,
+            s: 3,
+            r: 3
+        };
+
+        // Dimensions of sunburst frame
+        var width = window.innerWidth - li.w - 40;
+        var height = window.innerHeight;
+        var radius = Math.min(width, height) / 2;
+
         // Mapping of step names to colors is set in build Hierarchy
-        var colors = new Array();
+        var colors = [];
 
         // Total size of all segments; we set this later, after loading the data.
         var totalSize = 0;
@@ -141,16 +152,16 @@ function showSunburst($http) {
 
             var percentage = (100 * d.value / totalSize).toPrecision(3);
             var percentageString = percentage + "%";
-            if (percentage < 0.1) {
-                percentageString = "< 0.1%";
+            if (percentage < 0.05) {
+                percentageString = "< 0.05%";
             }
 
             d3.select("#percentage")
                 .text(percentageString);
 
             d3.select("#explanation")
-                .style("left", (window.innerWidth / 2-140/2).toString() + "px")
-                .style("top", ((height-80) / 2).toString() + "px")
+                .style("left", ((window.innerWidth - 140) / 2).toString() + "px")
+                .style("top", ((window.innerHeight - 80) / 2).toString() + "px")
                 .style("visibility", "");
 
             var sequenceArray = getAncestors(d);
@@ -281,14 +292,6 @@ function showSunburst($http) {
 
         function drawLegend() {
 
-            // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-            var li = {
-                w: 180,
-                h: 30,
-                s: 3,
-                r: 3
-            };
-
             var legend = d3.select("#legend").append("svg:svg")
                 .attr("width", li.w)
                 .attr("height", d3.keys(colors).length * (li.h + li.s));
@@ -345,7 +348,7 @@ function showSunburst($http) {
                 for (var j = 0; j < parts.length; j++) {
                     var children = currentNode["children"];
                     var nodeName = parts[j];
-                    colors[nodeName] = getColor(i, j);
+                    colors[nodeName] = intToRGB(hashCode(nodeName));
                     var childNode;
                     if (j + 1 < parts.length) {
                         // Not yet at the end of the sequence; move down the tree.
@@ -373,18 +376,20 @@ function showSunburst($http) {
             return root;
         };
 
-        function getColor(i, j) {
-            var letters = '0123456789ABCDEF'.split('');
-            var color = '#';
-            i = i*2 % 16;
-            j %= 16;
-            var sum = ((i + 1) * (j + 1)) % 16;
-            for (var i = 0; i < 6; i++) {
-                color += letters[sum];
-                sum = (sum + i + j) % 16;
+        function hashCode(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
             }
-            return color;
-        };
+            return hash;
+        }
+
+        function intToRGB(i) {
+            var c = (i & 0x00FFFFFF)
+                .toString(16)
+                .toUpperCase();
+            return "00000".substring(0, 6 - c.length) + c;
+        }
     }
 
 };
