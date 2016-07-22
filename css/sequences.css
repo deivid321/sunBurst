@@ -4,7 +4,6 @@ body {
   font-weight: 400;
   background-color: #fff;
   margin-top: 10px;
-  text-align:center;
 }
 
 #main {
@@ -16,7 +15,7 @@ body {
 }
 
 #sequence {
-  width: 600px;
+  width: 900px;
   height: 70px;
 }
 
@@ -38,7 +37,7 @@ body {
 }
 
 #explanation {
-  position: absolute;
+  position: relative;
   width: 140px;
   text-align: center;
   color: #666;

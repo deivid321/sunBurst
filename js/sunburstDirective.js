@@ -9,7 +9,7 @@ function showSunburst($http) {
     function link($scope, element, attrs) {
         $http({
             method: "GET",
-            url: "MemoryJson.json"
+            url: "data/MemoryJson.json"
         }).then(function mySucces(response) {
             $scope.status = response.statusText;
             $scope.paths = angular.fromJson(response.data.histograms[0].path);
@@ -39,8 +39,8 @@ function showSunburst($http) {
 
     function showSunburst(csv) {
         // Dimensions of sunburst.
-        var width = window.innerWidth - window.innerWidth / 10;
-        var height = window.innerHeight - window.innerHeight / 8;
+        var width = window.innerWidth - 220;
+        var height = window.innerHeight;
         var radius = Math.min(width, height) / 2;
 
         // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -149,8 +149,8 @@ function showSunburst($http) {
                 .text(percentageString);
 
             d3.select("#explanation")
-                .style("left", (width / 2).toString() + "px")
-                .style("top", (70 + height / 2.5).toString() + "px")
+                .style("left", (window.innerWidth / 2-140/2).toString() + "px")
+                .style("top", ((height-80) / 2).toString() + "px")
                 .style("visibility", "");
 
             var sequenceArray = getAncestors(d);
@@ -283,7 +283,7 @@ function showSunburst($http) {
 
             // Dimensions of legend item: width, height, spacing, radius of rounded rect.
             var li = {
-                w: 75,
+                w: 180,
                 h: 30,
                 s: 3,
                 r: 3
